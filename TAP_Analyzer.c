@@ -127,6 +127,10 @@ void TAP_Analyzer()
     cout << "Double-hit event: " << noOfNHits[2] << " (" << noOfNHits[2] / (currTime * 1.E-9) * 60. << " cpm)" << endl;
     cout << "Triple-hit event: " << noOfNHits[3] << " (" << noOfNHits[3] / (currTime * 1.E-9) * 60. << " cpm)" << endl;
 
+    cout << endl;
+
+    cout << "Drawing one dimensional histograms." << endl;
+
     TCanvas *cSingleHist = new TCanvas("cSingleHist", "Single_Ch_Histograms", 700, 1500);
     cSingleHist->Divide(1, 3);
     cSingleHist->cd(1);
@@ -136,10 +140,13 @@ void TAP_Analyzer()
     cSingleHist->cd(3);
     hist[3]->Draw("hist");
 
-    TCanvas *cThreeHitsHist = new TCanvas("cThreeHitsHist", "Triple_Coincidence_Histgram", 700, 500);
-    // histCh123->Draw("box");
-    TH3I *rebinHistCh123 = (TH3I *)histCh123->Rebin3D(32, 32, 32, "rebinHistCh123");
-    rebinHistCh123->Draw("box");
+    // cout << "Drawing three dimensional histogram." << endl;
+    //  TCanvas *cThreeHitsHist = new TCanvas("cThreeHitsHist", "Triple_Coincidence_Histgram", 700, 500);
+    //   histCh123->Draw("box");
+    //  TH3I *rebinHistCh123 = (TH3I*)histCh123->Rebin3D(32, 32, 32, "rebinHistCh123");
+    //  rebinHistCh123->Draw("box");
+
+    cout << "Drawing projections of three dimensional histogram." << endl;
 
     TCanvas *c3HitsHistProjection = new TCanvas("c3HitsHistProjection", "Projection_of_Triple_Coincidence_Histogram", 2100, 450);
     c3HitsHistProjection->Divide(3, 1);
@@ -155,6 +162,8 @@ void TAP_Analyzer()
     TH2I *projectionZX = (TH2I *)histCh123->Project3D("zx");
     TH2I *projectionZXrebin = (TH2I *)projectionZX->Rebin2D(32, 32, "projectionZXrebin");
     projectionZXrebin->Draw("colz");
+
+    cout << "Complete." << endl;
 
     tree->Write();
     file->Close();
