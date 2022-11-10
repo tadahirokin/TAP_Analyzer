@@ -7,7 +7,10 @@ Current version create TTree file and output coincidence analyzed data in consol
 Preparation:
 Put this macro and your converted list data (csv format) in the same folder.
 Edit TAP_Analyzer.c to suit your filename.
-#define "xxxxxx.bin"
+#define "xxxxxx.csv"
+
+You can also set coincidence window in unit of ns by the following sentence:
+#define COIN_WINDOW 1000
 
 Usage:
 Start ROOT (by CERN)
