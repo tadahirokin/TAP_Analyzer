@@ -45,6 +45,10 @@ void TAP_Analyzer()
     hist[3] = new TH1I("histCh3", "Ch3_histogram_all", 1024, 0, 1025);
     hist[3]->GetXaxis()->SetTitle("Ch3 Pulse Height");
 
+    TH2I *histCh12 = new TH2I("histCh12", "Ch1_and_2_histogram", 1024, 0, 1025, 1024, 0, 1025); // including triple coincidence event
+    TH2I *histCh23 = new TH2I("histCh23", "Ch2_and_3_histogram", 1024, 0, 1025, 1024, 0, 1025);
+    TH2I *histCh31 = new TH2I("histCh31", "Ch3_and_1_histogram", 1024, 0, 1025, 1024, 0, 1025);
+
     TH3I *histCh123 = new TH3I("histCh123", "Only_Ch1_and_2_and_3_histogram", 1024, 0, 1025, 1024, 0, 1025, 1024, 0, 1025);
     histCh123->GetXaxis()->SetTitle("Ch1 Pulse Height");
     histCh123->GetYaxis()->SetTitle("Ch2 Pulse Height");
@@ -73,6 +77,8 @@ void TAP_Analyzer()
     Long64_t prevTime = 0;
     int nCh;
     int tempPha;
+    int nCntShortTerm = 0;
+    Long64_t tenMinFind = 0;
 
     int noOfNHits[4];
 
@@ -103,9 +109,39 @@ void TAP_Analyzer()
         else
         {
             // cout << nHits << " " << pha[0] << " " << pha[1] << " " << pha[2] << " " << pha[3] << " " << time[0] << " " << time[1] << " " << time[2] << " " << time[3] << endl;
+            if (nHits == 2)
+            {
+                if (pha[1] == 0)
+                {
+                    histCh23->Fill(pha[2], pha[3]);
+                }
+                if (pha[2] == 0)
+                {
+                    histCh31->Fill(pha[3], pha[1]);
+                }
+                if (pha[3] == 0)
+                {
+                    histCh12->Fill(pha[1], pha[2]);
+                }
+            }
+
             if (nHits == 3)
             {
+                histCh23->Fill(pha[2], pha[3]);
+                histCh31->Fill(pha[3], pha[1]);
+                histCh12->Fill(pha[1], pha[2]);
                 histCh123->Fill(pha[1], pha[2], pha[3]);
+                Long64_t tempTimeSpan = currTime - tenMinFind;
+                if (tempTimeSpan > 6.0E10)
+                {
+                    cout >> "Past 10 min. average: at " >> currTime / 6.0E9 >> " min, " >> nCntShortTerm / (tempTimeSpan / 6.0E9) v >> " cpm \n";
+                    nCntShortTerm = 0;
+                    tenMinFind = currTime;
+                }
+                else
+                {
+                    nCntShortTerm++;
+                }
             }
             noOfNHits[nHits]++;
             tree->Fill();
@@ -113,7 +149,8 @@ void TAP_Analyzer()
             for (int i = 0; i < 4; i++)
             {
                 pha[i] = 0;
-                time[i] = 0;
+                f
+                    time[i] = 0;
             }
             pha[nCh] = tempPha;
             time[nCh] = currTime;
