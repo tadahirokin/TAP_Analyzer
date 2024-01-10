@@ -17,7 +17,7 @@
 #include <TFile.h>
 #include <TTree.h>
 
-#define FILE_NAME "list000003.csv"
+#define FILE_NAME "listdata_1221_triiangle_bottom000010.csv"
 #define COIN_WINDOW 1000 // in unit of nano second
 
 vector<string>
@@ -49,10 +49,10 @@ void TAP_Analyzer()
     TH2I *histCh23 = new TH2I("histCh23", "Ch2_and_3_histogram", 1024, 0, 1025, 1024, 0, 1025);
     TH2I *histCh31 = new TH2I("histCh31", "Ch3_and_1_histogram", 1024, 0, 1025, 1024, 0, 1025);
 
-    TH3I *histCh123 = new TH3I("histCh123", "Only_Ch1_and_2_and_3_histogram", 1024, 0, 1025, 1024, 0, 1025, 1024, 0, 1025);
-    histCh123->GetXaxis()->SetTitle("Ch1 Pulse Height");
-    histCh123->GetYaxis()->SetTitle("Ch2 Pulse Height");
-    histCh123->GetZaxis()->SetTitle("Ch3 Pulse Height");
+    // TH3I *histCh123 = new TH3I("histCh123", "Only_Ch1_and_2_and_3_histogram", 1024, 0, 1025, 1024, 0, 1025, 1024, 0, 1025);
+    // histCh123->GetXaxis()->SetTitle("Ch1 Pulse Height");
+    // histCh123->GetYaxis()->SetTitle("Ch2 Pulse Height");
+    // histCh123->GetZaxis()->SetTitle("Ch3 Pulse Height");
 
     int pha[4];
     Long64_t time[4];
@@ -96,7 +96,7 @@ void TAP_Analyzer()
         currTime = stol(splitString[0]);
         nCh = stoi(splitString[1]);
         tempPha = stoi(splitString[2]);
-        // cout << nHits << " " << currTime << " " << nCh << " " << tempPha << endl;
+        cout << nHits << " " << currTime << " " << nCh << " " << tempPha << endl;
 
         if (currTime - prevTime < COIN_WINDOW)
         {
@@ -130,11 +130,11 @@ void TAP_Analyzer()
                 histCh23->Fill(pha[2], pha[3]);
                 histCh31->Fill(pha[3], pha[1]);
                 histCh12->Fill(pha[1], pha[2]);
-                histCh123->Fill(pha[1], pha[2], pha[3]);
+                // histCh123->Fill(pha[1], pha[2], pha[3]);
                 Long64_t tempTimeSpan = currTime - tenMinFind;
                 if (tempTimeSpan > 6.0E10)
                 {
-                    cout >> "Past 10 min. average: at " >> currTime / 6.0E9 >> " min, " >> nCntShortTerm / (tempTimeSpan / 6.0E9) v >> " cpm \n";
+                    cout << "Past 10 min. average: at " << currTime / 6.0E9 << " min, " << nCntShortTerm / (tempTimeSpan / 6.0E9) v << " cpm \n";
                     nCntShortTerm = 0;
                     tenMinFind = currTime;
                 }
@@ -183,7 +183,7 @@ void TAP_Analyzer()
     //  TH3I *rebinHistCh123 = (TH3I*)histCh123->Rebin3D(32, 32, 32, "rebinHistCh123");
     //  rebinHistCh123->Draw("box");
 
-    cout << "Drawing projections of three dimensional histogram." << endl;
+    /*cout << "Drawing projections of three dimensional histogram." << endl;
 
     TCanvas *c3HitsHistProjection = new TCanvas("c3HitsHistProjection", "Projection_of_Triple_Coincidence_Histogram", 2100, 450);
     c3HitsHistProjection->Divide(3, 1);
@@ -198,7 +198,7 @@ void TAP_Analyzer()
     c3HitsHistProjection->cd(3);
     TH2I *projectionZX = (TH2I *)histCh123->Project3D("zx");
     TH2I *projectionZXrebin = (TH2I *)projectionZX->Rebin2D(32, 32, "projectionZXrebin");
-    projectionZXrebin->Draw("colz");
+    projectionZXrebin->Draw("colz");*/
 
     cout << "Complete." << endl;
 
